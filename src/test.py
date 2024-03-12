@@ -21,26 +21,6 @@ def main():
     # Show user options
     info("\n============ OPTIONS ============", False)
 
-    for idx, option in enumerate(OPTIONS):
-        print(colored(f" {idx + 1}. {option}", "cyan"))
-
-    info("=================================\n", False)
-
-    info("Starting YT Shorts Automater...")
-
-    cached_accounts = get_accounts("youtube")
-
-
-    table = PrettyTable()
-    table.field_names = ["ID", "UUID", "Nickname", "Niche"]
-
-    for account in cached_accounts:
-        table.add_row([cached_accounts.index(account) + 1, colored(account["id"], "cyan"),
-                       colored(account["nickname"], "blue"), colored(account["niche"], "green")])
-
-    print(table)
-
-
     while True:
         rem_temp_files()
         info("\n============ OPTIONS ============", False)
