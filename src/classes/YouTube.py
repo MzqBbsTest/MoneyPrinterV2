@@ -77,10 +77,10 @@ class YouTube:
         self.options.add_argument(fp_profile_path)
 
         # Set the service
-        self.service: Service = Service(GeckoDriverManager().install())
+        # self.service: Service = Service(GeckoDriverManager().install())
 
         # Initialize the browser
-        self.browser: webdriver.Firefox = webdriver.Firefox(service=self.service, options=self.options)
+        # self.browser: webdriver.Firefox = webdriver.Firefox(service=self.service, options=self.options)
 
     @property
     def niche(self) -> str:
