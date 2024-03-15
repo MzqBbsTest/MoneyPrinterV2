@@ -112,26 +112,28 @@ class YouTube:
         Returns:
             response (str): The generated AI Repsonse.
         """
-        if not model:
-            return g4f.ChatCompletion.create(
-                model=parse_model(get_model()),
-                messages=[
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ]
-            )
+        # http.
+        # localhost:8091/v1/tmp/image
+        # {
+        #     "user_id":"0",
+        #      "prompt":"画一张讲个卖火箭的小女孩的画"
+        # }
+        url = "https://ss.qq2021.com/v1/tmp/message"
+        data = {
+            "user_id": "0",
+            "prompt": prompt
+        }
+        headers = {"Content-Type": "application/json"}
+        response = requests.post(url, data=json.dumps(data), headers=headers)
+
+        if response.status_code == 200:
+            response_data = json.loads(response.text)
+            print("返回的JSON数据：", response_data)
+            return response_data["data"]["content"]
         else:
-            return g4f.ChatCompletion.create(
-                model=model,
-                messages=[
-                    {
-                        "role": "user",
-                        "content": prompt
-                    }
-                ]
-            )
+            print("请求失败，状态码：", response.status_code)
+            return None
+
 
     def generate_topic(self) -> str:
         """
@@ -302,25 +304,27 @@ class YouTube:
         """
         ok = False
         while ok == False:
-            url = f"https://hercai.onrender.com/{get_image_model()}/text2image?prompt={prompt}"
+            url = "https://ss.qq2021.com/v1/tmp/image"
+            data = {
+                "user_id":"0",
+                "prompt":prompt
+            }
+            headers = {"Content-Type": "application/json"}
 
-            r = requests.get(url)
-            parsed = r.json()
+            response = requests.post(url, data=json.dumps(data), headers=headers)
 
-            if "url" not in parsed or not parsed.get("url"):
-                # Retry
-                if get_verbose():
-                    info(f" => Failed to generate Image for Prompt: {prompt}. Retrying...")
-                ok = False
-            else:
+            if response.status_code == 200:
+                parsed = json.loads(response.text)
+                print("返回的JSON数据：", parsed)
                 ok = True
-                image_url = parsed["url"]
+                image_url = parsed["data"]["content"].replace("World", "https://cc01.plusai.io")
+
 
                 if get_verbose():
                     info(f" => Generated Image: {image_url}")
 
                 image_path = os.path.join(ROOT_DIR, ".mp", str(uuid4()) + ".png")
-                
+
                 with open(image_path, "wb") as image_file:
                     # Write bytes to file
                     image_r = requests.get(image_url)
@@ -331,8 +335,18 @@ class YouTube:
                     info(f" => Wrote Image to \"{image_path}\"\n")
 
                 self.images.append(image_path)
-                
+
                 return image_path
+
+            else:
+                print("请求失败，状态码：", response.status_code)
+                # Retry
+                if get_verbose():
+                    info(f" => Failed to generate Image for Prompt: {prompt}. Retrying...")
+                ok = False
+                time.sleep(10)
+
+
 
     def generate_script_to_speech(self, tts_instance: TTS) -> str:
         """
