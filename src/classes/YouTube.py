@@ -129,7 +129,7 @@ class YouTube:
         if response.status_code == 200:
             response_data = json.loads(response.text)
             print("返回的JSON数据：", response_data)
-            return response_data["data"]["content"]
+            return response_data["data"]["content"][0]
         else:
             print("请求失败，状态码：", response.status_code)
             print("请求失败，prompt：", prompt)
