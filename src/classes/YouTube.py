@@ -258,6 +258,7 @@ class YouTube:
         {self.script}
         """
 
+        warning("generate_promptsgenerate_promptsgenerate_prompts:")
         completion = str(self.generate_response(prompt, model=parse_model(get_image_prompt_llm())))\
             .replace("```json", "") \
             .replace("```", "")
@@ -285,6 +286,8 @@ class YouTube:
 
         self.image_prompts = image_prompts
 
+
+        warning("n_promptsn_promptsn_promptsn_prompts:", n_prompts, len(image_prompts))
         # Check the amount of image prompts
         # and remove if it's more than needed
         if len(image_prompts) > n_prompts:
