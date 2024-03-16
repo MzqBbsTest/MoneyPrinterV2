@@ -132,6 +132,7 @@ class YouTube:
             return response_data["data"]["content"]
         else:
             print("请求失败，状态码：", response.status_code)
+            print("请求失败，prompt：", prompt)
             return None
 
 
