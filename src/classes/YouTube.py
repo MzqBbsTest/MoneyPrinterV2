@@ -133,6 +133,7 @@ class YouTube:
         else:
             print("请求失败，状态码：", response.status_code)
             print("请求失败，prompt：", prompt)
+            print("请求失败，返回的JSON数据：", response.text)
             return None
 
 
