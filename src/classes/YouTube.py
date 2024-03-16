@@ -185,7 +185,7 @@ class YouTube:
         completion = self.generate_response(prompt)
 
         # Apply regex to remove *
-        completion = re.sub(r"\*", "", completion)
+        # completion = re.sub(r"\*", "", completion)
         
         if not completion:
             error("The generated script is empty.")
