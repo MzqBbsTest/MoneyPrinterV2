@@ -183,7 +183,7 @@ class YouTube:
         Language: {self.language}
         """
         completion = self.generate_response(prompt)
-
+        print("generate_scriptgenerate_scriptgenerate_script", completion)
         # Apply regex to remove *
         # completion = re.sub(r"\*", "", completion)
         
@@ -207,15 +207,16 @@ class YouTube:
         Returns:
             metadata (dict): The generated metadata.
         """
+        print("generate_metadatagenerate_metadatagenerate_metadata")
         title = self.generate_response(f"Please generate a YouTube Video Title for the following subject, including hashtags: {self.subject}. Only return the title, nothing else. Limit the title under 100 characters.")
-
+        print("title:" , title )
         if len(title) > 100:
             if get_verbose():
                 warning("Generated Title is too long. Retrying...")
             return self.generate_metadata()
 
         description = self.generate_response(f"Please generate a YouTube Video Description for the following script: {self.script}. Only return the description, nothing else.")
-        
+        print("description:", description)
         self.metadata = {
             "title": title,
             "description": description
@@ -230,8 +231,10 @@ class YouTube:
         Returns:
             image_prompts (List[str]): Generated List of image prompts.
         """
+        warning("n_prompts = len(self.script) / 3:")
         n_prompts = len(self.script) / 3
-
+        print(self.script)
+        print(n_prompts)
         prompt = f"""
         Generate {n_prompts} Image Prompts for AI Image Generation,
         depending on the subject of a video.
