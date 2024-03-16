@@ -287,7 +287,7 @@ class YouTube:
         self.image_prompts = image_prompts
 
 
-        warning("n_promptsn_promptsn_promptsn_prompts:", n_prompts, len(image_prompts))
+        print("n_promptsn_promptsn_promptsn_prompts:", n_prompts, len(image_prompts))
         # Check the amount of image prompts
         # and remove if it's more than needed
         if len(image_prompts) > n_prompts:
