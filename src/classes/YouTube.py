@@ -262,7 +262,7 @@ class YouTube:
         completion = str(self.generate_response(prompt, model=parse_model(get_image_prompt_llm())))\
             .replace("```json", "") \
             .replace("```", "")
-
+        print(completion)
         image_prompts = []
 
         if "image_prompts" in completion:
