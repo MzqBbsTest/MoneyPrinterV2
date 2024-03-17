@@ -150,13 +150,13 @@ class YouTube:
         message_id = data["message_id"]
 
         url = "https://ss.qq2021.com/v1/tmp/message/continue"
-        data = {
+        data2 = {
             "user_id": "0",
             "conversation_id": conversation_id,
             "message_id": message_id
         }
         headers = {"Content-Type": "application/json"}
-        response = requests.post(url, data=json.dumps(data), headers=headers)
+        response = requests.post(url, data=json.dumps(data2), headers=headers)
         if response.status_code == 200:
             response_data = json.loads(response.text)
             print("返回的JSON数据：", response_data)
