@@ -142,7 +142,8 @@ class YouTube:
             print("请求失败，状态码：", response.status_code)
             print("请求失败，prompt：", prompt)
             print("请求失败，返回的JSON数据：", vars(response))
-            return None
+            time.sleep(10)
+            return self.generate_response(prompt, model)
 
     def generate_response_continue(self, data):
 
@@ -161,14 +162,14 @@ class YouTube:
             response_data = json.loads(response.text)
             print("返回的JSON数据：", response_data)
             if not response_data["data"]["end"]:
-                response_data = self.generate_response_continue( response_data["data"])
-            response_data["data"]["content"][0] = data["content"][0]  + response_data["data"]["content"][0]
+                response_data = self.generate_response_continue(response_data["data"])
+            response_data["data"]["content"][0] = data["content"][0] + response_data["data"]["content"][0]
             return response_data
         else:
             print("请求失败，状态码：", response.status_code)
             print("请求失败，返回的JSON数据：", vars(response))
-            return None
-
+            time.sleep(10)
+            return self.generate_response_continue(data)
 
     def generate_topic(self) -> str:
         """
