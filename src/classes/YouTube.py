@@ -570,25 +570,28 @@ class YouTube:
         Returns:
             path (str): The path to the generated MP4 File.
         """
+
+        warning("generate_topic .....................")
         # Generate the Topic
         self.generate_topic()
-
+        warning("generate_script .....................")
         # Generate the Script
         self.generate_script()
-
+        warning("generate_metadata .....................")
         # Generate the Metadata
         self.generate_metadata()
-
+        warning("generate_prompts .....................")
         # Generate the Image Prompts
         self.generate_prompts()
-
+        warning("generate_image .....................")
         # Generate the Images
         for prompt in self.image_prompts:
             self.generate_image(prompt)
 
+        warning("generate_script_to_speech .....................")
         # Generate the TTS
         self.generate_script_to_speech(tts_instance)
-
+        warning("combine .....................")
         # Combine everything
         path = self.combine()
 
