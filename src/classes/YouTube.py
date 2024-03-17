@@ -268,7 +268,7 @@ class YouTube:
             image_prompts (List[str]): Generated List of image prompts.
         """
         warning("n_prompts = len(self.script) / 3:")
-        n_prompts = len(self.script) / 3
+        n_prompts = int(len(self.script) / 3)
         print(self.script)
         print(n_prompts)
         prompt = f"""
