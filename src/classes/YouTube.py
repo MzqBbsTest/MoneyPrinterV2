@@ -161,7 +161,7 @@ class YouTube:
             response_data = json.loads(response.text)
             print("返回的JSON数据：", response_data)
             if not response_data["data"]["end"]:
-                response_data = self.generate_response_continue(self, response_data["data"])
+                response_data = self.generate_response_continue( response_data["data"])
             response_data["data"]["content"][0] = data["content"][0]  + response_data["data"]["content"][0]
             return response_data
         else:
