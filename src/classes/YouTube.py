@@ -149,7 +149,7 @@ class YouTube:
         conversation_id = data["conversation_id"]
         message_id = data["message_id"]
 
-        url = "https://ss.qq2021.com/v1/tmp/message"
+        url = "https://ss.qq2021.com/v1/tmp/message/continue"
         data = {
             "user_id": "0",
             "conversation_id": conversation_id,
@@ -166,7 +166,6 @@ class YouTube:
             return response_data
         else:
             print("请求失败，状态码：", response.status_code)
-            print("请求失败，prompt：", prompt)
             print("请求失败，返回的JSON数据：", vars(response))
             return None
 
