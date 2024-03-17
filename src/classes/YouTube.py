@@ -361,7 +361,7 @@ class YouTube:
                 parsed = json.loads(response.text)
                 print("返回的JSON数据：", parsed)
                 ok = True
-                image_url = parsed["data"]["content"].replace("World", "https://cc01.plusai.io")
+                image_url = parsed["data"]["content"].replace("https://cc01.plusai.io", "")
 
                 if get_verbose():
                     info(f" => Generated Image: {image_url}")
