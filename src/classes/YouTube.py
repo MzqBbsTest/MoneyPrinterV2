@@ -29,6 +29,7 @@ from datetime import datetime
 # Set ImageMagick Path
 change_settings({"IMAGEMAGICK_BINARY": get_imagemagick_path()})
 
+
 class YouTube:
     """
     Class for YouTube Automation.
@@ -43,7 +44,9 @@ class YouTube:
     6. Show images each for n seconds, n: Duration of TTS / Amount of images [DONE]
     7. Combine Concatenated Images with the Text-to-Speech [DONE]
     """
-    def __init__(self, account_uuid: str, account_nickname: str, fp_profile_path: str, niche: str, language: str) -> None:
+
+    def __init__(self, account_uuid: str, account_nickname: str, fp_profile_path: str, niche: str,
+                 language: str) -> None:
         """
         Constructor for YouTube Class.
 
@@ -67,7 +70,7 @@ class YouTube:
 
         # Initialize the Firefox profile
         self.options: Options = Options()
-        
+
         # Set headless state of browser
         if get_headless():
             self.options.add_argument("--headless")
@@ -91,7 +94,7 @@ class YouTube:
             niche (str): The niche
         """
         return self._niche
-    
+
     @property
     def language(self) -> str:
         """
@@ -101,7 +104,7 @@ class YouTube:
             language (str): The language
         """
         return self._language
-    
+
     def generate_response(self, prompt: str, model: any = None) -> str:
         """
         Generates an LLM Response based on a prompt and the user-provided model.
@@ -129,7 +132,38 @@ class YouTube:
         if response.status_code == 200:
             response_data = json.loads(response.text)
             print("返回的JSON数据：", response_data)
+            if response_data["data"]["end"] == False:
+                response_data = generate_response_continue(self, response_data["data"])
+                if response_data is None:
+                    return None
+
             return response_data["data"]["content"][0]
+        else:
+            print("请求失败，状态码：", response.status_code)
+            print("请求失败，prompt：", prompt)
+            print("请求失败，返回的JSON数据：", vars(response))
+            return None
+
+    def generate_response_continue(self, data):
+
+        conversation_id = data["conversation_id"]
+        message_id = data["message_id"]
+
+        url = "https://ss.qq2021.com/v1/tmp/message"
+        data = {
+            "user_id": "0",
+            "conversation_id": conversation_id,
+            "message_id": message_id
+        }
+        headers = {"Content-Type": "application/json"}
+        response = requests.post(url, data=json.dumps(data), headers=headers)
+        if response.status_code == 200:
+            response_data = json.loads(response.text)
+            print("返回的JSON数据：", response_data)
+            if response_data["data"]["end"] == False:
+                response_data = generate_response_continue(self, response_data["data"])
+            response_data["data"]["content"][0] = data["content"][0]  + response_data["data"]["content"][0]
+            return response_data
         else:
             print("请求失败，状态码：", response.status_code)
             print("请求失败，prompt：", prompt)
@@ -144,7 +178,8 @@ class YouTube:
         Returns:
             topic (str): The generated topic.
         """
-        completion = self.generate_response(f"Please generate a specific video idea that takes about the following topic: {self.niche}. Make it exactly one sentence. Only return the topic, nothing else.")
+        completion = self.generate_response(
+            f"Please generate a specific video idea that takes about the following topic: {self.niche}. Make it exactly one sentence. Only return the topic, nothing else.")
 
         if not completion:
             error("Failed to generate Topic.")
@@ -186,18 +221,18 @@ class YouTube:
         print("generate_scriptgenerate_scriptgenerate_script", completion)
         # Apply regex to remove *
         # completion = re.sub(r"\*", "", completion)
-        
+
         if not completion:
             error("The generated script is empty.")
             return
-        
+
         if len(completion) > 5000:
             if get_verbose():
                 warning("Generated Script is too long. Retrying...")
             self.generate_script()
-        
+
         self.script = completion
-    
+
         return completion
 
     def generate_metadata(self) -> dict:
@@ -208,14 +243,16 @@ class YouTube:
             metadata (dict): The generated metadata.
         """
         print("generate_metadatagenerate_metadatagenerate_metadata")
-        title = self.generate_response(f"Please generate a YouTube Video Title for the following subject, including hashtags: {self.subject}. Only return the title, nothing else. Limit the title under 100 characters.")
-        print("title:" , title )
+        title = self.generate_response(
+            f"Please generate a YouTube Video Title for the following subject, including hashtags: {self.subject}. Only return the title, nothing else. Limit the title under 100 characters.")
+        print("title:", title)
         if len(title) > 100:
             if get_verbose():
                 warning("Generated Title is too long. Retrying...")
             return self.generate_metadata()
 
-        description = self.generate_response(f"Please generate a YouTube Video Description for the following script: {self.script}. Only return the description, nothing else.")
+        description = self.generate_response(
+            f"Please generate a YouTube Video Description for the following script: {self.script}. Only return the description, nothing else.")
         print("description:", description)
         self.metadata = {
             "title": title,
@@ -223,7 +260,7 @@ class YouTube:
         }
 
         return self.metadata
-    
+
     def generate_prompts(self) -> List[str]:
         """
         Generates AI Image Prompts based on the provided Video Script.
@@ -262,7 +299,7 @@ class YouTube:
         """
 
         warning("generate_promptsgenerate_promptsgenerate_prompts:")
-        completion = str(self.generate_response(prompt, model=parse_model(get_image_prompt_llm())))\
+        completion = str(self.generate_response(prompt, model=parse_model(get_image_prompt_llm()))) \
             .replace("```json", "") \
             .replace("```", "")
         print(completion)
@@ -289,7 +326,6 @@ class YouTube:
 
         self.image_prompts = image_prompts
 
-
         print("n_promptsn_promptsn_promptsn_prompts:", n_prompts, len(image_prompts))
         # Check the amount of image prompts
         # and remove if it's more than needed
@@ -314,8 +350,8 @@ class YouTube:
         while ok == False:
             url = "https://ss.qq2021.com/v1/tmp/image"
             data = {
-                "user_id":"0",
-                "prompt":prompt
+                "user_id": "0",
+                "prompt": prompt
             }
             headers = {"Content-Type": "application/json"}
 
@@ -326,7 +362,6 @@ class YouTube:
                 print("返回的JSON数据：", parsed)
                 ok = True
                 image_url = parsed["data"]["content"].replace("World", "https://cc01.plusai.io")
-
 
                 if get_verbose():
                     info(f" => Generated Image: {image_url}")
@@ -354,8 +389,6 @@ class YouTube:
                 ok = False
                 time.sleep(10)
 
-
-
     def generate_script_to_speech(self, tts_instance: TTS) -> str:
         """
         Converts the generated script into Speech using CoquiTTS and returns the path to the wav file.
@@ -379,7 +412,7 @@ class YouTube:
             info(f" => Wrote TTS to \"{path}\"")
 
         return path
-    
+
     def add_video(self, video: dict) -> None:
         """
         Adds a video to the cache.
@@ -397,13 +430,13 @@ class YouTube:
 
         with open(cache, "r") as file:
             previous_json = json.loads(file.read())
-            
+
             # Find our account
             accounts = previous_json["accounts"]
             for account in accounts:
                 if account["id"] == self._account_uuid:
                     account["videos"].append(video)
-            
+
             # Commit changes
             with open(cache, "w") as f:
                 f.write(json.dumps(previous_json))
@@ -470,22 +503,22 @@ class YouTube:
 
                 # Not all images are same size,
                 # so we need to resize them
-                if round((clip.w/clip.h), 4) < 0.5625:
+                if round((clip.w / clip.h), 4) < 0.5625:
                     if get_verbose():
                         info(f" => Resizing Image: {image_path} to 1080x1920")
-                    clip = crop(clip, width=clip.w, height=round(clip.w/0.5625), \
+                    clip = crop(clip, width=clip.w, height=round(clip.w / 0.5625), \
                                 x_center=clip.w / 2, \
                                 y_center=clip.h / 2)
                 else:
                     if get_verbose():
                         info(f" => Resizing Image: {image_path} to 1920x1080")
-                    clip = crop(clip, width=round(0.5625*clip.h), height=clip.h, \
+                    clip = crop(clip, width=round(0.5625 * clip.h), height=clip.h, \
                                 x_center=clip.w / 2, \
                                 y_center=clip.h / 2)
                 clip = clip.resize((1080, 1920))
 
                 # FX (Fade In)
-                #clip = clip.fadein(2)
+                # clip = clip.fadein(2)
 
                 clips.append(clip)
                 tot_dur += clip.duration
@@ -493,12 +526,12 @@ class YouTube:
         final_clip = concatenate_videoclips(clips)
         final_clip = final_clip.set_fps(30)
         random_song = choose_random_song()
-        
+
         subtitles_path = self.generate_subtitles(self.tts_path)
 
         # Equalize srt file
         equalize_subtitles(subtitles_path, 10)
-        
+
         # Burn the subtitles into the video
         subtitles = SubtitlesClip(subtitles_path, generator)
 
@@ -565,7 +598,7 @@ class YouTube:
         self.video_path = os.path.abspath(path)
 
         return path
-    
+
     def get_channel_id(self) -> str:
         """
         Gets the Channel ID of the YouTube Account.
@@ -672,7 +705,7 @@ class YouTube:
             # Set as unlisted
             if verbose:
                 info("\t=> Setting as unlisted...")
-            
+
             radio_button = driver.find_elements(By.XPATH, YOUTUBE_RADIO_BUTTON_XPATH)
             radio_button[2].click()
 
@@ -724,7 +757,6 @@ class YouTube:
         except:
             self.browser.quit()
             return False
-
 
     def get_videos(self) -> List[dict]:
         """
