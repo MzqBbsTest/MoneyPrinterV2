@@ -352,7 +352,7 @@ class YouTube:
             url = "https://ss.qq2021.com/v1/tmp/image"
             data = {
                 "user_id": "0",
-                "prompt": prompt
+                "prompt": "Draw a picture with the following theme:" + prompt
             }
             headers = {"Content-Type": "application/json"}
 
