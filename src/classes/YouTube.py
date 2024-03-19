@@ -270,6 +270,7 @@ class YouTube:
         """
         warning("n_prompts = len(self.script) / 3:")
         n_prompts = int(len(self.script) / 3)
+        n_prompts = 40
         print(self.script)
         print(n_prompts)
         prompt = f"""
@@ -351,7 +352,7 @@ class YouTube:
             url = "https://ss.qq2021.com/v1/tmp/image"
             data = {
                 "user_id": "0",
-                "prompt": prompt
+                "prompt": "Draw a picture with the following theme:" + prompt
             }
             headers = {"Content-Type": "application/json"}
 
