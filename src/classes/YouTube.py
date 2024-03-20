@@ -361,24 +361,25 @@ class YouTube:
             if response.status_code == 200:
                 parsed = json.loads(response.text)
                 print("返回的JSON数据：", parsed)
-                ok = True
-                image_url = parsed["data"]["content"].replace("https://cc01.plusai.io", "")
+                if parsed["data"]["content"][:4] == "http":
+                    ok = True
+                    image_url = parsed["data"]["content"].replace("https://cc01.plusai.io", "")
 
-                if get_verbose():
-                    info(f" => Generated Image: {image_url}")
+                    if get_verbose():
+                        info(f" => Generated Image: {image_url}")
 
-                image_path = os.path.join(ROOT_DIR, ".mp", str(uuid4()) + ".png")
+                    image_path = os.path.join(ROOT_DIR, ".mp", str(uuid4()) + ".png")
 
-                with open(image_path, "wb") as image_file:
-                    # Write bytes to file
-                    image_r = requests.get(image_url)
+                    with open(image_path, "wb") as image_file:
+                        # Write bytes to file
+                        image_r = requests.get(image_url)
 
-                    image_file.write(image_r.content)
+                        image_file.write(image_r.content)
 
-                if get_verbose():
-                    info(f" => Wrote Image to \"{image_path}\"\n")
+                    if get_verbose():
+                        info(f" => Wrote Image to \"{image_path}\"\n")
 
-                self.images.append(image_path)
+                    self.images.append(image_path)
 
                 return image_path
 
