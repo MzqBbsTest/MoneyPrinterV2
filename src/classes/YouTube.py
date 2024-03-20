@@ -361,6 +361,7 @@ class YouTube:
 
             if response.status_code == 200:
                 parsed = json.loads(response.text)
+                print("请求prompt：", prompt)
                 print("返回的JSON数据：", parsed)
                 if parsed["data"]["content"][:4] == "http":
                     ok = True
