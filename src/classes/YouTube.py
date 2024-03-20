@@ -576,23 +576,34 @@ class YouTube:
         Returns:
             path (str): The path to the generated MP4 File.
         """
+        with open("map_data.json", "r") as f:
+            data = json.load(f)
 
-        warning("generate_topic .....................")
-        # Generate the Topic
-        self.generate_topic()
-        warning("generate_script .....................")
-        # Generate the Script
-        self.generate_script()
-        warning("generate_metadata .....................")
-        # Generate the Metadata
-        self.generate_metadata()
-        warning("generate_prompts .....................")
-        # Generate the Image Prompts
-        self.generate_prompts()
-        warning("generate_image .....................")
+        if len(self.images) == 0:
+            warning("generate_topic .....................")
+            # Generate the Topic
+            self.generate_topic()
+            warning("generate_script .....................")
+            # Generate the Script
+            self.generate_script()
+            warning("generate_metadata .....................")
+            # Generate the Metadata
+            self.generate_metadata()
+            warning("generate_prompts .....................")
+            # Generate the Image Prompts
+            self.generate_prompts()
+            warning("generate_image .....................")
+            no = 0
+        else:
+            no = len(self.images) - 1
         # Generate the Images
-        for prompt in self.image_prompts:
+        image_prompts = self.image_prompts[no:]
+        for prompt in image_prompts:
             self.generate_image(prompt)
+
+            with open("map_data.json", "w") as f:
+                json.dump(vars(self), f)
+
             time.sleep(600)
 
         warning("generate_script_to_speech .....................")
@@ -606,7 +617,10 @@ class YouTube:
             info(f" => Generated Video: {path}")
 
         self.video_path = os.path.abspath(path)
+        shutil.copy(self.video_path, os.path.abspath(os.path.join(ROOT_DIR, ".mp2", str(uuid4()) + ".mp4")))
 
+        if os.path.isfile("map_data.json"):
+            os.remove("map_data.json")
         return path
 
     def get_channel_id(self) -> str:

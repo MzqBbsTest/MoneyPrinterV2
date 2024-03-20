@@ -36,7 +36,7 @@ def main():
             "2",
             "4",
             "3",
-            "2"
+            "en"
         )
         youtube.generate_video(tts)
 
