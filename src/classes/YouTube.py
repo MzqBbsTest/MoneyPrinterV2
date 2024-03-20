@@ -588,7 +588,7 @@ class YouTube:
         # Generate the Images
         for prompt in self.image_prompts:
             self.generate_image(prompt)
-            time.sleep(300)
+            time.sleep(600)
 
         warning("generate_script_to_speech .....................")
         # Generate the TTS
