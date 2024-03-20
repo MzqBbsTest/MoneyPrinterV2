@@ -282,6 +282,7 @@ class YouTube:
         a JSON-Array of strings.
 
         Each search term should consist of a full sentence,
+        Each full sentence cannot be a broad topic and must be expressed in a visual way,
         always add the main subject of the video.
 
         Be emotional and use interesting adjectives to make the
@@ -380,9 +381,14 @@ class YouTube:
                         info(f" => Wrote Image to \"{image_path}\"\n")
 
                     self.images.append(image_path)
-
-                return image_path
-
+                    return image_path
+                else:
+                    print("请求失败，状态码：", response.status_code)
+                    # Retry
+                    if get_verbose():
+                        info(f" => Failed to generate Image for Prompt: {prompt}. Retrying...")
+                    ok = False
+                    time.sleep(10)
             else:
                 print("请求失败，状态码：", response.status_code)
                 # Retry
