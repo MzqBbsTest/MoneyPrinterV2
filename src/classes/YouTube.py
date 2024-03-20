@@ -579,6 +579,7 @@ class YouTube:
         if not os.path.exists("map_data.json"):
             with open("map_data.json", "r+") as f:
                 data = json.load(f)
+                print(data)
 
         if len(self.images) == 0:
             warning("generate_topic .....................")
