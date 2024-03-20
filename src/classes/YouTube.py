@@ -384,10 +384,7 @@ class YouTube:
                     self.images.append(image_path)
                     return image_path
                 else:
-                    print("请求失败，状态码：", response.status_code)
-                    # Retry
-                    if get_verbose():
-                        info(f" => Failed to generate Image for Prompt: {prompt}. Retrying...")
+                    print("reset：================================================")
                     ok = False
                     time.sleep(10)
             else:
