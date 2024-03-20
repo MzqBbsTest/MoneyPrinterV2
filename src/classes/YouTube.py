@@ -270,8 +270,8 @@ class YouTube:
         """
         warning("n_prompts = len(self.script) / 3:")
         n_prompts = int(len(self.script) / 3)
-        if n_prompts > 40:
-            n_prompts = 40
+        # if n_prompts > 40:
+        #     n_prompts = 40
         print(self.script)
         print(n_prompts)
         prompt = f"""
@@ -618,7 +618,7 @@ class YouTube:
                     "images":self.images,
                 }, f)
 
-            time.sleep(600)
+            time.sleep(700)
 
         warning("generate_script_to_speech .....................")
         # Generate the TTS
