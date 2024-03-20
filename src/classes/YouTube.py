@@ -576,7 +576,7 @@ class YouTube:
         Returns:
             path (str): The path to the generated MP4 File.
         """
-        with open("map_data.json", "r") as f:
+        with open("map_data.json", "r+") as f:
             data = json.load(f)
 
         if len(self.images) == 0:
@@ -601,7 +601,7 @@ class YouTube:
         for prompt in image_prompts:
             self.generate_image(prompt)
 
-            with open("map_data.json", "w") as f:
+            with open("map_data.json", "w+") as f:
                 json.dump(vars(self), f)
 
             time.sleep(600)
