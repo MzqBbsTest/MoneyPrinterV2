@@ -576,7 +576,7 @@ class YouTube:
         Returns:
             path (str): The path to the generated MP4 File.
         """
-        if not os.path.exists("map_data.json"):
+        if os.path.exists("map_data.json"):
             with open("map_data.json", "r+") as f:
                 data = json.load(f)
                 print(data)
