@@ -387,14 +387,14 @@ class YouTube:
                 else:
                     print("reset：================================================")
                     ok = False
-                    time.sleep(10)
+                    time.sleep(100)
             else:
                 print("请求失败，状态码：", response.status_code)
                 # Retry
                 if get_verbose():
                     info(f" => Failed to generate Image for Prompt: {prompt}. Retrying...")
                 ok = False
-                time.sleep(10)
+                time.sleep(100)
 
     def generate_script_to_speech(self, tts_instance: TTS) -> str:
         """

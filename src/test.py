@@ -22,7 +22,6 @@ def main():
     info("\n============ OPTIONS ============", False)
 
     while True:
-        rem_temp_files()
         info("\n============ OPTIONS ============", False)
 
         for idx, youtube_option in enumerate(YOUTUBE_OPTIONS):
@@ -39,6 +38,8 @@ def main():
             "en"
         )
         youtube.generate_video(tts)
+        rem_temp_files()
+
 
 
 
@@ -57,7 +58,7 @@ if __name__ == "__main__":
     assert_folder_structure()
 
     # Remove temporary files
-    rem_temp_files()
+    # rem_temp_files()
 
     # Fetch MP3 Files
     fetch_songs()
